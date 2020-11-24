@@ -5,6 +5,8 @@
 .. current_module:: little_funcs.py
 .. created_by:: Darren Xie
 .. created_on:: 11/02/2020
+
+Give some basic ideas
 """
 
 
