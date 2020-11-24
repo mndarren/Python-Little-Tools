@@ -12,7 +12,7 @@ import os
 import shutil
 
 
-class FileTools:
+class FileTool:
     """Contain all tools for file action"""
     @staticmethod
     def rename_all_ext(dir_path=None):
