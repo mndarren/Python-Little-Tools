@@ -8,6 +8,17 @@
 
 Give some basic ideas
 """
+import os
+
+
+# Change all files ext name in a dir
+def rename_all_ext(dir_path=None):
+    dir = 'default_path'
+    new_ext = '.sql'
+    os.chdir(dir)
+    for count, filename in enumerate(os.listdir(dir)):
+        pre, ext = os.path.splitext(filename)
+        os.rename(filename, pre + new_ext)
 
 
 # Check if all elements in list are unique
