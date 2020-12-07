@@ -75,6 +75,7 @@ class GreatCases:
         print(f"Modify time: {time_stamp}")
         file_list = glob(str(filename))
         # Sort by mtime
+        # file_list.sort(key=os.path.getmtime, reverse=True)
         file_list = sorted(file_list, key=os.path.getmtime)
         greates_file = ''
         for file_item in file_list:
