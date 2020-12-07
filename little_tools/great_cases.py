@@ -74,6 +74,8 @@ class GreatCases:
         time_stamp = datetime.fromtimestamp(mtime).strftime("%y%m%d %H:%M")
         print(f"Modify time: {time_stamp}")
         file_list = glob(str(filename))
+        # Sort by mtime
+        file_list = sorted(file_list, key=os.path.getmtime)
         greates_file = ''
         for file_item in file_list:
             if file_item > greates_file:
