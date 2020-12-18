@@ -11,6 +11,7 @@ Collect great use cases
 import os
 import re
 import argparse
+import cx_Oracle
 import sys
 from codecs import open
 from datetime import datetime
@@ -44,8 +45,9 @@ class GreatCases:
 
                     if '%' in value:
                         try:
-                            try_k = re.search(PERCENT_RE, value).group(1)
-                            value = re.sub(PERCENT_RE, os.environ[try_k].replace('\\', '/'), value)
+                            while '%' in value:
+                                try_k = re.search(PERCENT_RE, value).group(1)
+                                value = re.sub(PERCENT_RE, os.environ[try_k].replace('\\', '/'), value, 1)
                         except Exception:
                             raise Exception(f"{try_k} not defined")
                     os.environ[key] = value.replace('/', '\\')

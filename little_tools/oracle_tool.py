@@ -11,10 +11,12 @@ Collect Oracle DB tools
 import os
 from subprocess import Popen, PIPE
 from pathlib import Path
+from typing import Dict
 import logging
 import cx_Oracle
 
-ENTRY_NAME = 'MyEntry'  # this name should be listed in your tnsnames.ora file
+ENTRY_NAME1 = 'MyEntry1'  # this name should be listed in your tnsnames.ora file
+ENTRY_NAME2 = 'MyEntry2'  # this name should be listed in your tnsnames.ora file
 USER_ID = ''
 PASSWORD = ''
 WALLET_PASS = b'Wallet_Pass0XXX'  # this value must be byte string
@@ -23,7 +25,6 @@ JAVA_HOME = ''  # Java home path
 CLIENT_PATH = ''  # Oracle Client Path
 WALLET_PATH = ''  # Choose a path to store Oracle Wallet
 CMD_CREATE = f'mkstore -wrl {WALLET_PATH} -create'
-CMD_ENTRY = f'mkstore -wrl {WALLET_PATH} -createCredential {ENTRY_NAME} {USER_ID} {PASSWORD}'
 
 # For connection only
 HOST = ''
@@ -51,14 +52,17 @@ class OracleTool:
         logger.info(f"Created Wallet in {WALLET_PATH}")
 
         # Insert WALLET ENTRY
-        p = Popen(CMD_ENTRY, stdin=PIPE, stdout=PIPE, shell=True)
-        p.communicate(input=WALLET_PASS)  # need to repeat input
-        p.terminate()
+        entries = [ENTRY_NAME1, ENTRY_NAME2]
+        for entry in entries:
+            cmd_entry = f'mkstore -wrl {WALLET_PATH} -createCredential {entry} {USER_ID} {PASSWORD}'
+            p = Popen(cmd_entry, stdin=PIPE, stdout=PIPE, shell=True)
+            p.communicate(input=WALLET_PASS)  # need to repeat input
+            p.terminate()
         logger.info(f"Inserted Wallet Entry.")
 
         # Test WALLET
         try:
-            conn_str = f'/@{ENTRY_NAME}'
+            conn_str = f'/@{ENTRY_NAME1}'
             with cx_Oracle.connect(conn_str) as conn, conn.cursor() as cursor:
                 cursor.execute(self.query)
                 while row := cursor.fetchone():
@@ -92,3 +96,23 @@ class OracleTool:
                             format='%asctimes - %(name)s - %(levelname)s - %(message)s',
                             datefmt='%m/%d/%Y %I:%M:%S %p')
         return logging.getLogger(log_name)
+
+    def assign_field_value_to_var(self):
+        """
+        Assign field values from DB to variables
+        Just code block
+        """
+        name, type1 = None, None
+        try:
+            conn_str = f'/@{ENTRY_NAME1}'
+            with cx_Oracle.connect(conn_str) as conn, conn.cursor() as cursor:
+                cursor.execute(self.query)
+                columns = ['name', 'type1']
+                cursor.rowfactory = lambda *args: dict(zip(columns, args))
+                record: [Dict] = cursor.fetchone()
+                if record:
+                    for k, v in record.items():
+                        if v:
+                            exec(f"{k} = '{v}")
+        except cx_Oracle.DatabaseError as e:
+            logger.error(str(e))
