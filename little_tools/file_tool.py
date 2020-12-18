@@ -10,6 +10,9 @@ Collect File action tools
 """
 import os
 import shutil
+from glob import glob
+from pathlib import Path
+from datetime import datetime
 
 
 class FileTool:
@@ -42,3 +45,31 @@ class FileTool:
                     shutil.rmtree(file_path)
             except Exception as e:
                 print(f"Failed to delete {file_path} {e}")
+
+    def walk_all_files_dirs(self, root_path):
+        """
+        Walk through all files and subdirectories in root path
+        Delete files whose mtime <= target data & remove empty folders
+        """
+        recursive = True
+        file_mask = 'Filename_*_[1-9]*'
+        target_date = '20201217'
+        preserve_sub = False
+
+        for dir_name, subdir_list, file_list in os.walk(root_path):
+            if not recursive and dir_name != root_path:
+                continue
+            files_mask = []
+            if file_mask:
+                files_mask = glob(str(Path(dir_name).joinpath(file_mask)))
+            for fname in file_list:
+                path_file = Path(dir_name).joinpath(fname)
+                if not file_mask or str(path_file) in files_mask:
+                    # get mtime with format YYYYMMDD
+                    file_date = datetime.fromtimestamp(path_file.stat().st_mtime).strftime("%Y%m%d")
+                    if file_date <= target_date:
+                        os.unlink(path_file)
+            # remove empty folders
+            if not len(subdir_list) and not len(file_list):
+                if not preserve_sub:
+                    os.rmdir(dir_name)

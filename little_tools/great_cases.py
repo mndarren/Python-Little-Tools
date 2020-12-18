@@ -11,10 +11,9 @@ Collect great use cases
 import os
 import re
 import argparse
-import cx_Oracle
 import sys
 from codecs import open
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from glob import glob
 from hashlib import md5
 
@@ -116,3 +115,18 @@ class GreatCases:
         except IOError as e:
             raise IOError(f"Cannot open {file_name}: {e.errno}")
         return md5(content).hexdigest()
+
+    def date_conversion(self):
+        """
+        Collect date conversion approaches
+        :return: target date
+        """
+        # from timestamp to YYYYMMDD
+        # file_date = datetime.fromtimestamp(path_file.stat().st_mtime).strftime("%Y%m%d")
+        # "20200908" - 12 days = "20200827"
+        input_date = "20200908"
+        d_date = date(int(input_date[:4]), int(input_date[4:6]), int(input_date[-2:]))
+        t_date = d_date - timedelta(days=12)
+        target_date = str(t_date).replace('-', '')
+
+        return target_date
