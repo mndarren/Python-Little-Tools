@@ -32,6 +32,8 @@ class TestExampleCases(unittest.TestCase):
     def test_mock(self, mock_conn):
         mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__\
             .return_value.fetchone.reutrn_value = ()
+        cursor = mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value
+        cursor.fetchone.side_effect = [('Subject1', 'Body1'), 'Darren.Xie@gmail.com', '']
 
 
 if __name__ == '__main__':
