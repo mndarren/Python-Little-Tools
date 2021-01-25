@@ -31,4 +31,7 @@ venv:
     venv\Scripts\deactivate.bat
     # for mac
     source venv/bin/activate
+docs:
+    sphinx-build -b html docs/build/sphinx/html
+    sphinx-build -b pdf docs/source docs/build/sphinx/pdf
 ```
