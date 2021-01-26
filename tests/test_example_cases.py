@@ -10,7 +10,7 @@ Test example cases
 """
 import unittest
 import cx_Oracle
-from little_tools.file_tool import FileTool
+from python_little_tools.file_tool import FileTool
 from unittest.mock import patch, MagicMock
 from io import StringIO
 
