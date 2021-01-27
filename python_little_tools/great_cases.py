@@ -130,3 +130,29 @@ class GreatCases:
         target_date = str(t_date).replace('-', '')
 
         return target_date
+
+    def sort_int_list_by_occur_times(self, items):
+        """
+        Example: [1, 3, 1, 5, 7, 8, 5, 9, 4, 9, 4, 1]
+        sorted = [3, 7, 8, 4, 4, 5, 5, 9, 9, 1, 1, 1]
+        :param items: input integer list
+        :return: sorted list
+        """
+        group_dict = {}
+        return_list = []
+        for num in items:
+            if num in group_dict:
+                group_dict[num] += 1
+            else:
+                group_dict[num] = 1
+        group_dict = {k: v for k, v in sorted(group_dict.items(), key=lambda x: (x[1], x[0]))}
+        for k, v in group_dict.items():
+            for i in range(v):
+                return_list.append(k)
+        return return_list
+
+
+if __name__ == "__main__":
+    items = [1, 3, 1, 5, 7, 8, 5, 9, 4, 9, 4, 1]
+    return_list = GreatCases().sort_int_list_by_occur_times(items)
+    print(return_list)
