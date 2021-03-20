@@ -151,8 +151,42 @@ class GreatCases:
                 return_list.append(k)
         return return_list
 
+    def coin_toss_possibility(self, times: int):
+        """
+        Suppose a coin is tossed 21 times in a row with equal probability of heads and tails.
+        What is the probability that the coin is facing the same way 3 times in a row
+        (that is 3 heads in a row or 3 tails in a row) exactly once in the 21 tosses?
+        Algorithm:
+        :return:
+        """
+        import itertools
+        total = 0
+        count_000_111 = 0
+        with open('temp_coin.txt', 'w') as out_fh:
+            for str1 in map(''.join, itertools.product('01', repeat=times)):
+                if self.check_string(str1, times):
+                    count_000_111 += 1
+                    out_fh.write(f"{str1}\n")
+                total += 1
+        print(f"tosses = {times}, total = {total}, containing 000 or 111 exactly once = {count_000_111}")
+
+    def check_string(self, str1, times):
+        count = 0
+        for i in range(times-3):
+            if ('000' in str1[i:i+3] and '000' not in str1[i+1:] and '111' not in str1[i+1:]
+                and '000' not in str1[:i+2] and '111' not in str1[:i+2]) \
+                    or ('111' in str1[i:i+3] and '111' not in str1[i+1:] and '000' not in str1[i+1:]
+                        and '111' not in str1[:i+2] and '000' not in str1[:i+2]):
+                count += 1
+                if count > 1:
+                    return False
+        if count == 1:
+            return True
+        return False
+
 
 if __name__ == "__main__":
-    items = [1, 3, 1, 5, 7, 8, 5, 9, 4, 9, 4, 1]
-    return_list = GreatCases().sort_int_list_by_occur_times(items)
-    print(return_list)
+    # items = [1, 3, 1, 5, 7, 8, 5, 9, 4, 9, 4, 1]
+    # return_list = GreatCases().sort_int_list_by_occur_times(items)
+    # print(return_list)
+    GreatCases().coin_toss_possibility(21)
